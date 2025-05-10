@@ -1,55 +1,9 @@
-import { List, ActionPanel, Action, showToast, Toast, Icon } from "@raycast/api";
+import { List, showToast, Toast } from "@raycast/api";
 import fetch from "node-fetch";
 import { useState, useEffect } from "react";
 import { Ticker } from "./types";
-import { formatPercentage, getFirstOutcomePrice, trimQuestion, formatVolumeWithSuffix, getMarketUrl } from "./utils";
-import { POLY_GAMMA_URL } from "./constants"
-
-function MarketList({ ticker }: { ticker: Ticker }) {
-  const sortedMarkets = [...ticker.markets].sort((a, b) => {
-    const aPrice = getFirstOutcomePrice(a.outcomePrices);
-    const bPrice = getFirstOutcomePrice(b.outcomePrices);
-    return bPrice - aPrice;
-  });
-
-  return (
-    <List>
-      {sortedMarkets.map((market) => {
-        try {
-          if (!market.outcomePrices || (!market.groupItemTitle && !market.question)) {
-            return null;
-          }
-
-          const firstPrice = getFirstOutcomePrice(market.outcomePrices);
-          const volume = Number(market.volume24hr) || 0;
-
-          return (
-            <List.Item
-              key={market.question}
-              title={market.groupItemTitle || trimQuestion(market.question)}
-              accessories={[
-                { text: formatPercentage(firstPrice) },
-                { text: `24h Vol: ${formatVolumeWithSuffix(volume)}` },
-              ]}
-              actions={
-                <ActionPanel>
-                  <Action.OpenInBrowser title="Open Market" url={getMarketUrl(ticker.slug)} />
-                  <Action.CopyToClipboard
-                    title="Copy Market Info"
-                    content={`${market.groupItemTitle || market.question}\n${formatPercentage(firstPrice)}\n24h Volume: ${formatVolumeWithSuffix(volume)}`}
-                    shortcut={{ modifiers: ["cmd"], key: "c" }}
-                  />
-                </ActionPanel>
-              }
-            />
-          );
-        } catch {
-          return null;
-        }
-      })}
-    </List>
-  );
-}
+import { POLY_GAMMA_URL } from "./constants";
+import { EventListItem } from "./common";
 
 export default function Command() {
   const [isLoading, setIsLoading] = useState(true);
@@ -59,7 +13,8 @@ export default function Command() {
     const fetchTickers = async () => {
       try {
         const response = await fetch(
-            POLY_GAMMA_URL + "events?limit=50&active=true&archived=false&closed=false&order=volume24hr&ascending=false&offset=0",
+          POLY_GAMMA_URL +
+            "events?limit=50&active=true&archived=false&closed=false&order=volume24hr&ascending=false&offset=0",
         );
 
         if (!response.ok) {
@@ -86,22 +41,7 @@ export default function Command() {
   return (
     <List isLoading={isLoading}>
       {tickers.map((ticker) => (
-        <List.Item
-          key={ticker.title}
-          title={ticker.title}
-          subtitle={`${ticker.markets.length} markets`}
-          accessories={[{ text: `24h Vol: ${formatVolumeWithSuffix(ticker.volume24hr)}` }]}
-          actions={
-            <ActionPanel>
-              <Action.Push title="View Markets" target={<MarketList ticker={ticker} />} icon={Icon.AppWindowList} />
-              <Action.CopyToClipboard
-                title="Copy Market Info"
-                content={`${ticker.title}\n24h Volume: ${formatVolumeWithSuffix(ticker.volume24hr)}\nMarkets: ${ticker.markets.length}`}
-                shortcut={{ modifiers: ["cmd"], key: "c" }}
-              />
-            </ActionPanel>
-          }
-        />
+        <EventListItem ticker={ticker} key={ticker.slug} />
       ))}
     </List>
   );
