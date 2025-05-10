@@ -20,10 +20,17 @@
       "title": "Top Markets",
       "description": "Shows top markets by 24h volume",
       "mode": "view"
+    },
+    {
+      "name": "search-for-market",
+      "title": "Search for Market",
+      "description": "Search the currently active markets",
+      "mode": "view"
     }
   ],
   "dependencies": {
     "@raycast/api": "^1.84.6",
+    "@raycast/utils": "^1.19.1",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
