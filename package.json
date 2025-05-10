@@ -5,6 +5,10 @@
   "description": "Search and view top markets on Polymarket",
   "icon": "polymarket.png",
   "author": "Osprey",
+  "owner": "dkloecker",
+  "contributors": [
+    "dkloecker"
+  ],
   "categories": [
     "News",
     "Finance"
