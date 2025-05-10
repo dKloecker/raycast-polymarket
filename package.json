@@ -2,7 +2,7 @@
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "polymarket",
   "title": "Polymarket",
-  "description": "Search and view top markets on Polymarket",
+  "description": "Search and view markets on Polymarket",
   "icon": "polymarket.png",
   "author": "Osprey",
   "owner": "dkloecker",
@@ -23,8 +23,8 @@
     },
     {
       "name": "search-for-market",
-      "title": "Search for Market",
-      "description": "Search the currently active markets",
+      "title": "Polymarket Search",
+      "description": "Search Polymarket for specific market",
       "mode": "view"
     }
   ],
