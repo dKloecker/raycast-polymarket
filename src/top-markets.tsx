@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 import { useState, useEffect } from "react";
 import { Ticker } from "./types";
 import { formatPercentage, getFirstOutcomePrice, trimQuestion, formatVolumeWithSuffix, getMarketUrl } from "./utils";
+import { POLY_GAMMA_URL } from "./constants"
 
 function MarketList({ ticker }: { ticker: Ticker }) {
   const sortedMarkets = [...ticker.markets].sort((a, b) => {
@@ -58,7 +59,7 @@ export default function Command() {
     const fetchTickers = async () => {
       try {
         const response = await fetch(
-          "https://gamma-api.polymarket.com/events?limit=50&active=true&archived=false&closed=false&order=volume24hr&ascending=false&offset=0",
+            POLY_GAMMA_URL + "events?limit=50&active=true&archived=false&closed=false&order=volume24hr&ascending=false&offset=0",
         );
 
         if (!response.ok) {

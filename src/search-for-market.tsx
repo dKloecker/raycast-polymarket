@@ -4,11 +4,12 @@ import { useState } from "react";
 import { URLSearchParams } from "node:url";
 import { Ticker } from "./types";
 import { formatPercentage, getFirstOutcomePrice, trimQuestion, formatVolumeWithSuffix, getMarketUrl } from "./utils";
+import { POLY_REST_URL } from "./constants";
 
 export default function Command() {
   const [searchText, setSearchText] = useState("");
   const { data, isLoading } = useFetch(
-    "https://polymarket.com/api/events/global?" +
+    POLY_REST_URL + "events/global?" +
       new URLSearchParams({ q: searchText.length === 0 ? "" : searchText, events_status: "active" }),
     {
       parseResponse: parseFetchResponse,
