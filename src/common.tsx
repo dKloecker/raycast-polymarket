@@ -1,6 +1,6 @@
 import { List, ActionPanel, Action, Icon } from "@raycast/api";
 import { formatPercentage, getFirstOutcomePrice, trimQuestion, formatVolumeWithSuffix, getMarketUrl } from "./utils";
-import { Ticker } from "./types";
+import { Ticker, Market } from "./types";
 
 function EventListItem({ ticker: Ticker }: { ticker: Ticker }) {
   return (
@@ -23,6 +23,36 @@ function EventListItem({ ticker: Ticker }: { ticker: Ticker }) {
   );
 }
 
+function MarketListItem({market, ticker}: {market: Market, ticker: Ticker}) {
+  if (!market.outcomePrices || (!market.groupItemTitle && !market.question)) {
+    return null;
+  }
+
+  const firstPrice = getFirstOutcomePrice(market.outcomePrices);
+  const volume = Number(market.volume24hr) || 0;
+
+  return (
+    <List.Item
+      key={market.question}
+      title={market.groupItemTitle || trimQuestion(market.question)}
+      accessories={[
+        { text: formatPercentage(firstPrice) },
+        { text: `24h Vol: ${formatVolumeWithSuffix(volume)}` },
+      ]}
+      actions={
+        <ActionPanel>
+          <Action.OpenInBrowser title="Open Market" url={getMarketUrl(ticker.slug)} />
+          <Action.CopyToClipboard
+            title="Copy Market Info"
+            content={`${market.groupItemTitle || market.question}\n${formatPercentage(firstPrice)}\n24h Volume: ${formatVolumeWithSuffix(volume)}`}
+            shortcut={{ modifiers: ["cmd"], key: "c" }}
+          />
+        </ActionPanel>
+      }
+    />
+  );
+}
+
 function MarketList({ ticker }: { ticker: Ticker }) {
   const sortedMarkets = [...ticker.markets].sort((a, b) => {
     const aPrice = getFirstOutcomePrice(a.outcomePrices);
@@ -34,33 +64,7 @@ function MarketList({ ticker }: { ticker: Ticker }) {
     <List>
       {sortedMarkets.map((market) => {
         try {
-          if (!market.outcomePrices || (!market.groupItemTitle && !market.question)) {
-            return null;
-          }
-
-          const firstPrice = getFirstOutcomePrice(market.outcomePrices);
-          const volume = Number(market.volume24hr) || 0;
-
-          return (
-            <List.Item
-              key={market.question}
-              title={market.groupItemTitle || trimQuestion(market.question)}
-              accessories={[
-                { text: formatPercentage(firstPrice) },
-                { text: `24h Vol: ${formatVolumeWithSuffix(volume)}` },
-              ]}
-              actions={
-                <ActionPanel>
-                  <Action.OpenInBrowser title="Open Market" url={getMarketUrl(ticker.slug)} />
-                  <Action.CopyToClipboard
-                    title="Copy Market Info"
-                    content={`${market.groupItemTitle || market.question}\n${formatPercentage(firstPrice)}\n24h Volume: ${formatVolumeWithSuffix(volume)}`}
-                    shortcut={{ modifiers: ["cmd"], key: "c" }}
-                  />
-                </ActionPanel>
-              }
-            />
-          );
+          return <MarketListItem market={market} ticker={ticker} key={market.slug} />
         } catch {
           return null;
         }
