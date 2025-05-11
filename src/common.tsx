@@ -23,7 +23,7 @@ function EventListItem({ ticker: Ticker }: { ticker: Ticker }) {
   );
 }
 
-function MarketListItem({market, ticker}: {market: Market, ticker: Ticker}) {
+function MarketListItem({ market, ticker }: { market: Market; ticker: Ticker }) {
   if (!market.outcomePrices || (!market.groupItemTitle && !market.question)) {
     return null;
   }
@@ -35,10 +35,7 @@ function MarketListItem({market, ticker}: {market: Market, ticker: Ticker}) {
     <List.Item
       key={market.question}
       title={market.groupItemTitle || trimQuestion(market.question)}
-      accessories={[
-        { text: formatPercentage(firstPrice) },
-        { text: `24h Vol: ${formatVolumeWithSuffix(volume)}` },
-      ]}
+      accessories={[{ text: formatPercentage(firstPrice) }, { text: `24h Vol: ${formatVolumeWithSuffix(volume)}` }]}
       actions={
         <ActionPanel>
           <Action.OpenInBrowser title="Open Market" url={getMarketUrl(ticker.slug)} />
@@ -64,7 +61,7 @@ function MarketList({ ticker }: { ticker: Ticker }) {
     <List>
       {sortedMarkets.map((market) => {
         try {
-          return <MarketListItem market={market} ticker={ticker} key={market.slug} />
+          return <MarketListItem market={market} ticker={ticker} key={market.slug} />;
         } catch {
           return null;
         }
