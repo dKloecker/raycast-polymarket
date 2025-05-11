@@ -1,5 +1,4 @@
 import { List, showToast, Toast } from "@raycast/api";
-import fetch from "node-fetch";
 import { useState, useEffect } from "react";
 import { Ticker } from "./types";
 import { POLY_GAMMA_URL } from "./constants";
