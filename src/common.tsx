@@ -2,19 +2,19 @@ import { List, ActionPanel, Action, Icon } from "@raycast/api";
 import { formatPercentage, getFirstOutcomePrice, trimQuestion, formatVolumeWithSuffix, getMarketUrl } from "./utils";
 import { Ticker, Market } from "./types";
 
-function EventListItem({ ticker: Ticker }: { ticker: Ticker }) {
+function EventListItem({ ticker }: { ticker: Ticker }) {
   return (
     <List.Item
-      key={Ticker.title}
-      title={Ticker.title}
-      subtitle={`${Ticker.markets.length} markets`}
-      accessories={[{ text: `24h Vol: ${formatVolumeWithSuffix(Ticker.volume24hr)}` }]}
+      key={ticker.slug}
+      title={ticker.title}
+      subtitle={`${ticker.markets.length} markets`}
+      accessories={[{ text: `24h Vol: ${formatVolumeWithSuffix(ticker.volume24hr)}` }]}
       actions={
         <ActionPanel>
-          <Action.Push title="View Markets" target={<MarketList ticker={Ticker} />} icon={Icon.AppWindowList} />
+          <Action.Push title="View Markets" target={<MarketList ticker={ticker} />} icon={Icon.AppWindowList} />
           <Action.CopyToClipboard
             title="Copy Market Info"
-            content={`${Ticker.title}\n24h Volume: ${formatVolumeWithSuffix(Ticker.volume24hr)}\nMarkets: ${Ticker.markets.length}`}
+            content={`${ticker.title}\n24h Volume: ${formatVolumeWithSuffix(ticker.volume24hr)}\nMarkets: ${ticker.markets.length}`}
             shortcut={{ modifiers: ["cmd"], key: "c" }}
           />
         </ActionPanel>
@@ -33,7 +33,7 @@ function MarketListItem({ market, ticker }: { market: Market; ticker: Ticker }) 
 
   return (
     <List.Item
-      key={market.question}
+      key={market.slug}
       title={market.groupItemTitle || trimQuestion(market.question)}
       accessories={[{ text: formatPercentage(firstPrice) }, { text: `24h Vol: ${formatVolumeWithSuffix(volume)}` }]}
       actions={
